@@ -95,3 +95,73 @@ To learn more about React Native, take a look at the following resources:
 - [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
 - [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+
+# Code Convention (Update)
+
+## 1. Naming
+- **Component**: PascalCase (e.g., `LoginScreen`, `AppTextInput`)
+- **Variables, functions**: camelCase (e.g., `userName`, `handleLogin`)
+- **Folders**: kebab-case or camelCase (e.g., `auth`, `bottom-bar`)
+
+## 2. Folder Structure
+- `src/components/`: Reusable components for the whole app
+- `src/screens/`: Screens, organized by module (auth, profile, bottom-bar)
+- `src/screens/[module]/libs/types.ts`: Define all types/interfaces for the module
+- `src/screens/[module]/libs/constants.ts`: Store static sample data, constants for the module
+- `src/navigation/`: Navigation logic
+- `src/store/`: State management (Zustand)
+- `src/config/`: App-wide config (appConfig, apiConfig)
+- `src/theme.ts`: Color and global style configuration
+
+## 3. Type & Data Convention
+- **Type/interface**: Place in `libs/types.ts` of each module
+- **Static data, constants**: Place in `libs/constants.ts` of each module
+- **Component**: Only import type/data, do not contain static data or inline types
+
+## 4. Style
+- Use StyleSheet for local styles
+- Use color variables from `theme.ts` (COLORS)
+- Avoid hardcoding colors, fonts, spacing in components
+
+## 5. Import
+- Import React at the top of the file
+- Import packages first, then local files
+- Group imports logically
+
+## 6. Component
+- One component per file
+- Props should be clear, typed with type/interface
+- Prefer function components with React.FC
+- Avoid deep nesting, split into smaller components when needed
+
+## 7. Best Practices
+- Avoid business logic in UI components
+- Use hooks for state and side effects
+- Handle errors and loading clearly
+- Comment complex code sections
+- Use meaningful names, avoid unclear abbreviations
+
+## 8. Example (Attendance)
+```tsx
+// src/screens/bottom-bar/attendance/AttendanceScreen.tsx
+import React, { useState } from 'react';
+import { View, Text } from 'react-native';
+import { ClassItem } from './libs/types';
+import { SAMPLE_CLASSES } from './libs/constants';
+
+const AttendanceScreen: React.FC = () => {
+  const [items, setItems] = useState<ClassItem[]>(SAMPLE_CLASSES);
+  // ...component code...
+};
+```
+
+// src/screens/bottom-bar/attendance/libs/types.ts
+export type Checkin = { latitude: number; longitude: number; time: string };
+export type ClassItem = { id: string; subject: string; time: string; room?: string; teacher?: string; present?: boolean; checkin?: Checkin };
+
+// src/screens/bottom-bar/attendance/libs/constants.ts
+import type { ClassItem } from './types';
+export const SAMPLE_CLASSES: ClassItem[] = [ ... ];
+```
+
+Following these conventions makes code easier to read, maintain, and extend.

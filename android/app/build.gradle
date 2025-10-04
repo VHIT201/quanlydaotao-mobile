@@ -52,6 +52,9 @@ react {
 
     /* Autolinking */
     autolinkLibrariesWithApp()
+
+    /* Enable Hermes */
+    hermesEnabled = true
 }
 
 /**

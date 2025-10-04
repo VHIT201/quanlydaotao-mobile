@@ -4,7 +4,9 @@ buildscript {
         minSdkVersion = 24
         compileSdkVersion = 36
         targetSdkVersion = 36
-        ndkVersion = "27.1.12297006"
+    // Use a stable NDK known to work with RN native modules
+    // If you don't have it installed, install via Android Studio SDK Manager (NDK (Side by side))
+    ndkVersion = "21.4.7075529"
         kotlinVersion = "2.1.20"
     }
     repositories {
