@@ -1,31 +1,30 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   View,
   Text,
   Pressable,
   StyleSheet,
-  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
   Animated,
 } from 'react-native';
+import LoaderScreen from '../../components/LoaderScreen';
 import { COLORS } from '../../theme';
 import AppTextInput from '../../components/AppTextInput';
 import { Facebook } from 'lucide-react-native';
-import { useGlobalStore } from '../../store/globalStore';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { loadI18nModule } from '../../i18n';
 import LanguageSelector from '../../components/LanguageSelector';
-
+import { useLogin } from '../../hooks/useLogin';
+import Toast from 'react-native-toast-message';
 const LOGO_URL = 'https://vietprodev.vn/wp-content/uploads/2024/12/Logo-VietProDev.png';
 
-const LoginScreen: React.FC = () => {
+const LoginScreen = () => {
   const navigation = useNavigation<any>();
-  // Sử dụng đúng cách để tránh vòng lặp vô hạn
-  const setLoading = useGlobalStore(state => state.setLoading);
+  const { mutate, isPending } = useLogin();
   const { t, i18n } = useTranslation('auth');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -39,7 +38,7 @@ const LoginScreen: React.FC = () => {
       useNativeDriver: true,
       friction: 7,
     }).start();
-  }, [i18n.language]);
+  }, [i18n.language, cardAnim]);
 
   const handleLogin = () => {
     setError('');
@@ -47,18 +46,31 @@ const LoginScreen: React.FC = () => {
       setError(t('empty_fields'));
       return;
     }
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      if (username === 'student' && password === '123456') {
-        Alert.alert(t('login_success'), t('welcome_back'));
-        // TODO: set user info, navigate to main app
-      } else {
-        setError(t('invalid_credentials'));
-      }
-    }, 1200);
+    mutate(
+    { username, password },
+    {
+      onSuccess: () => {
+        Toast.show({
+          type: 'success',
+          text1: t('system'),
+          text2: t('login_success'),
+          position: 'top',
+          visibilityTime: 3000,
+        })
+      },
+      onError: () => {
+        Toast.show({
+          type: 'error',
+          text1: t('system'),
+          text2: t('invalid_credentials'),
+          position: 'top',
+          visibilityTime: 3000,
+        })
+      },
+    }
+    );
   };
-
+  if (isPending) return <LoaderScreen />
   return (
     <View style={styles.bgWrap}>
       <View
@@ -115,7 +127,14 @@ const LoginScreen: React.FC = () => {
               style={{ color: COLORS.text }}
             />
             <Pressable
-              style={[styles.loginBtn, { backgroundColor: COLORS.primary }]}
+              style={({ pressed }) => [
+              styles.loginBtn,
+              { 
+                backgroundColor: COLORS.primary,
+                opacity: pressed ? 0.7 : 1, 
+                transform: [{ scale: pressed ? 0.96 : 1 }],
+              },
+            ]}
               onPress={handleLogin}
               android_ripple={{ color: COLORS.secondary }}
             >
@@ -164,7 +183,7 @@ const LoginScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  bgWrap: { flex: 1 },
+  bgWrap: { flex: 1, position: 'relative' },
   gradientTop: {
     position: 'absolute',
     top: 0,

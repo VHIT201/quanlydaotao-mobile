@@ -1,7 +1,6 @@
-import React from 'react';
 import {View, Text, ActivityIndicator, StyleSheet} from 'react-native';
 
-const LoaderScreen: React.FC = () => (
+const LoaderScreen = () => (
   <View style={styles.container}>
     <ActivityIndicator size="large" color="#2196F3" />
     <Text style={styles.text}>Đang tải...</Text>
@@ -9,7 +8,7 @@ const LoaderScreen: React.FC = () => (
 );
 
 const styles = StyleSheet.create({
-  container: {flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'red'},
+  container: {position: 'absolute', zIndex: 10, width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent'},
   text: {marginTop: 10, fontSize: 16, color: '#64748b'},
 });
 

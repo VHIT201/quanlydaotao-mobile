@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as RNLocalize from 'react-native-localize';
-import { useGlobalStore } from '../store/globalStore';
-import i18n from '../i18n';
+import useLanguageStore from '../store/languageStore';
 
 /**
  * Hook để khởi tạo và đồng bộ ngôn ngữ khi khởi động ứng dụng
@@ -11,13 +10,11 @@ import i18n from '../i18n';
 export const useLanguageInit = () => {
   // Lưu ý: Chúng ta vẫn cần lấy hàm setLanguage từ store, nhưng Zustand
   // sẽ đảm bảo hàm này ổn định giữa các lần render
-  const setLanguage = useGlobalStore((state) => state.setLanguage);
+  const setLanguage = useLanguageStore((state) => state.setLanguage);
   
   useEffect(() => {
-    const initLanguage = async () => {
-      try {
-        console.log('Đang khởi tạo ngôn ngữ...');
-        
+    (async () => {
+      try {        
         // Thử lấy ngôn ngữ đã lưu từ AsyncStorage
         const storedLanguage = await AsyncStorage.getItem('user-language');
         
@@ -44,8 +41,6 @@ export const useLanguageInit = () => {
           console.error('Lỗi khi đặt ngôn ngữ mặc định:', innerError);
         }
       }
-    };
-    
-    initLanguage();
-  }, []);
+    })();
+  }, [setLanguage]);
 };

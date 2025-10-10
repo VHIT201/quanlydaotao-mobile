@@ -1,26 +1,13 @@
-import React, { useCallback } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { useGlobalStore } from '../store/globalStore';
 import { COLORS } from '../theme';
+import useLanguageStore from '../store/languageStore';
 
-interface LanguageSelectorProps {
-  style?: object;
-}
-
-const LanguageSelector: React.FC<LanguageSelectorProps> = ({ style }) => {
-  // Use useGlobalStore correctly to avoid unnecessary re-renders
-  // Get each value separately to avoid infinite loops
-  const language = useGlobalStore(state => state.language);
-  const setLanguageStore = useGlobalStore(state => state.setLanguage);
+const LanguageSelector = ({ style } : {style?: object})=> {
+  const language = useLanguageStore(state => state.language);
+  const setLanguageStore = useLanguageStore(state => state.setLanguage);
   
-  // Use useCallback to memoize event handler functions
-  const handleSetVietnamese = useCallback(() => {
-    setLanguageStore('vi');
-  }, [setLanguageStore]);
-  
-  const handleSetEnglish = useCallback(() => {
-    setLanguageStore('en');
-  }, [setLanguageStore]);
+  const handleSetVietnamese = () => setLanguageStore('vi');
+  const handleSetEnglish = () => setLanguageStore('en');
   
   return (
     <View style={[styles.container, style]}>

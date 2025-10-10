@@ -1,0 +1,51 @@
+export type Action = {id: string; title: string; icon: any; color?: string};
+export type ClassItem = {id: string; subject: string; time: string; room: string; teacher?: string; status?: 'upcoming' | 'done' | 'live'};
+export type Announcement = {id: string; title: string; body: string; date: string};
+export type Slot = {id: string; subject: string; time: string; room?: string; teacher?: string; color?: string};
+export type Student = {
+  studentId: string;
+  fullName: string;
+  dob: string; // DD/MM/YYYY
+  gender: string;
+  idNumber: string;
+  ethnicity?: string;
+  religion?: string;
+  nationality?: string;
+  phone?: string;
+  email?: string;
+  permanentAddress?: string;
+  currentAddress?: string;
+  major?: string;
+  className?: string;
+  cohort?: string;
+  faculty?: string;
+  status?: string;
+  gpa?: string;
+  credits?: string;
+  enrolledDate?: string;
+  expectedGradDate?: string;
+  trainingType?: string;
+  scholarship?: string;
+  activities?: string;
+  awards?: string;
+  notes?: string;
+};
+export type CourseCardProps = {
+  id: string;
+  subject: string;
+  time: string;
+  room?: string;
+  teacher?: string;
+  status?: 'upcoming' | 'live' | 'done';
+  onJoin?: (id: string) => void;
+};
+export type IconProps = { color: string; size: number };
+export type RootStackParamList = {
+  Home: undefined;
+  Schedule: undefined;
+  Attendance: undefined;
+  ProfileStack: undefined;
+  Settings: undefined;
+  EditProfile: undefined;
+  History: undefined;
+};

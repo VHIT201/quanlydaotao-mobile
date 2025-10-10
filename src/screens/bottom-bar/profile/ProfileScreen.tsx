@@ -1,55 +1,37 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {View, Text, StyleSheet, Pressable, ScrollView, Alert, Switch, Animated, TouchableWithoutFeedback} from 'react-native';
-import {User, Settings, LogOut, Edit2, FileText, Bell, Moon, Info, HelpCircle, ChevronRight} from 'lucide-react-native';
+import {View, Text, StyleSheet, Pressable, ScrollView, Alert, Switch} from 'react-native';
+import {User, Settings, LogOut, Edit2, FileText, Bell, Moon, Info, ChevronRight} from 'lucide-react-native';
 import {useNavigation} from '@react-navigation/native';
-
-const ProfileScreen: React.FC = () => {
+import Header from './profile-components/Header';
+import StatCards from './profile-components/StatCards';
+import { useUserProfile } from '../../../hooks/useUserProfile';
+import { useLogout } from '../../../hooks/useLogout';
+import LoaderScreen from '../../../components/LoaderScreen';
+const ProfileScreen = () => {
   const navigation = useNavigation();
-  const user = {name: 'Nguyễn Văn A', email: 'nguyenvana@example.com', avatarColor: '#60a5fa'};
   const [notifyEnabled, setNotifyEnabled] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
-  const avatarScale = useState(new Animated.Value(1))[0];
-  const onAvatarPressIn = () => Animated.spring(avatarScale, {toValue: 0.92, useNativeDriver: true}).start();
-  const onAvatarPressOut = () => Animated.spring(avatarScale, {toValue: 1, useNativeDriver: true}).start();
-
+  const {mutate, isPending} = useLogout()
+  const {data} = useUserProfile()
   const onViewInfo = () => (navigation as any).navigate('EditProfile');
   const onEdit = () => Alert.alert('Chỉnh sửa', 'Mở màn hình chỉnh sửa (placeholder)');
   const onHistory = () => Alert.alert('Lịch sử', 'Hiển thị lịch sử điểm danh (placeholder)');
   const onSettings = () => Alert.alert('Cài đặt', 'Mở cài đặt (placeholder)');
-  const onLogout = () => {
-    // Optionally: clear user state here
-    (navigation as any).navigate('Login');
-  };
 
+  const onLogout = () => {
+    mutate()
+  };
   return (
     <SafeAreaView style={styles.container}>
+      {isPending && <LoaderScreen />}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Custom header with color blocks */}
-        <View style={styles.headerBg}>
-          <View style={styles.headerGradientTop} />
-          <View style={styles.headerGradientBottom} />
-        </View>
-        <View style={styles.header}>
-          <TouchableWithoutFeedback onPressIn={onAvatarPressIn} onPressOut={onAvatarPressOut}>
-            <Animated.View style={[styles.avatar, {backgroundColor: user.avatarColor, transform: [{scale: avatarScale}]}]}>
-              <Text style={styles.avatarText}>{user.name.split(' ').slice(-1)[0][0]}</Text>
-            </Animated.View>
-          </TouchableWithoutFeedback>
-          <View style={styles.userInfo}>
-            <Text style={styles.name}>{user.name}</Text>
-            <Text style={styles.email}>{user.email}</Text>
-          </View>
-          <Pressable style={styles.editBtn} onPress={onEdit}>
-            <Edit2 color="#0f172a" size={20} />
-          </Pressable>
-        </View>
+        <Header email={data?.data?.email} firstName={data?.data?.firstName} lastName={data?.data?.lastName}/>
+
         {/* Stat cards */}
-        <View style={styles.statsRow}>
-          <View style={styles.statCard}><Text style={styles.statNum}>12</Text><Text style={styles.statLabel}>Buổi hôm nay</Text></View>
-          <View style={styles.statCard}><Text style={styles.statNum}>88%</Text><Text style={styles.statLabel}>Chuyên cần</Text></View>
-          <View style={styles.statCard}><Text style={styles.statNum}>3</Text><Text style={styles.statLabel}>Vắng</Text></View>
-        </View>
+        <StatCards todaySchedule={12} attendance={88} absence={3}/>
+
         {/* Quick actions */}
         <Text style={styles.sectionTitle}>Tính năng nhanh</Text>
         <View style={styles.quickRow}>
@@ -93,89 +75,8 @@ const ProfileScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {flex: 1, backgroundColor: '#f1f5f9'},
+  container: {flex: 1, backgroundColor: '#f1f5f9', position: 'relative'},
   scrollContent: {padding: 20, paddingBottom: 80},
-  headerBg: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 140,
-    zIndex: -1,
-  },
-  headerGradientTop: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 90,
-    backgroundColor: '#06b6d4',
-    borderBottomLeftRadius: 40,
-    borderBottomRightRadius: 40,
-  },
-  headerGradientBottom: {
-    position: 'absolute',
-    top: 90,
-    left: 0,
-    right: 0,
-    height: 50,
-    backgroundColor: '#3b82f6',
-    borderBottomLeftRadius: 40,
-    borderBottomRightRadius: 40,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    marginTop: 30,
-  },
-  avatar: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 4,
-    borderColor: '#fff',
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-  },
-  avatarText: {color: '#fff', fontSize: 36, fontWeight: '900'},
-  userInfo: {flex: 1, marginLeft: 18},
-  name: {fontSize: 22, fontWeight: '900', color: '#0f172a'},
-  email: {color: '#64748b', marginTop: 4, fontSize: 15},
-  editBtn: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.12,
-    shadowRadius: 4,
-  },
-  statsRow: {flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20},
-  statCard: {
-    flex: 1,
-    backgroundColor: '#fff',
-    marginHorizontal: 8,
-    padding: 18,
-    borderRadius: 16,
-    alignItems: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.10,
-    shadowRadius: 4,
-  },
-  statNum: {fontWeight: '900', fontSize: 20, color: '#0f172a'},
-  statLabel: {color: '#64748b', marginTop: 8, fontSize: 13},
   sectionTitle: {
     fontSize: 17,
     fontWeight: '800',

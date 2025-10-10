@@ -1,4 +1,4 @@
-import React, {useMemo, useRef, useState, useEffect} from 'react';
+import React, {useMemo, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   View,
@@ -7,13 +7,13 @@ import {
   Pressable,
   FlatList,
   Dimensions,
-  useWindowDimensions,
+  // useWindowDimensions,
 } from 'react-native';
 import {Clock, ChevronLeft, ChevronRight} from 'lucide-react-native';
+import { Slot } from '../../../types/Types';
 
 const {width: screenWidth} = Dimensions.get('window');
 
-type Slot = {id: string; subject: string; time: string; room?: string; teacher?: string; color?: string};
 
 const sampleSchedule: Record<string, Slot[]> = {
   mon: [

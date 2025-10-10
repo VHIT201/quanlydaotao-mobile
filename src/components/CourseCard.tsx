@@ -1,18 +1,9 @@
 import React, {useRef} from 'react';
 import {View, Text, StyleSheet, Pressable, Animated} from 'react-native';
 import {CalendarDays, Clock, Check} from 'lucide-react-native';
+import { CourseCardProps } from '../types/Types';
 
-type Props = {
-  id: string;
-  subject: string;
-  time: string;
-  room?: string;
-  teacher?: string;
-  status?: 'upcoming' | 'live' | 'done';
-  onJoin?: (id: string) => void;
-};
-
-const CourseCard: React.FC<Props> = ({id, subject, time, room, teacher, status = 'upcoming', onJoin}) => {
+const CourseCard: React.FC<CourseCardProps> = ({id, subject, time, room, teacher, status = 'upcoming', onJoin}) => {
   const scale = useRef(new Animated.Value(1)).current;
 
   const onPressIn = () => Animated.spring(scale, {toValue: 0.97, useNativeDriver: true, friction: 8}).start();

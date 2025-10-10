@@ -15,64 +15,10 @@ import {
 } from 'react-native';
 import {ArrowLeft, Edit2, RefreshCw, User, Phone, BookOpen, Info, Copy} from 'lucide-react-native';
 import {useNavigation} from '@react-navigation/native';
+import { Student } from '../../types/Types';
+import { sampleStudent } from '../../placeholderSample';
 
-type Student = {
-  studentId: string;
-  fullName: string;
-  dob: string; // DD/MM/YYYY
-  gender: string;
-  idNumber: string;
-  ethnicity?: string;
-  religion?: string;
-  nationality?: string;
-  phone?: string;
-  email?: string;
-  permanentAddress?: string;
-  currentAddress?: string;
-  major?: string;
-  className?: string;
-  cohort?: string;
-  faculty?: string;
-  status?: string;
-  gpa?: string;
-  credits?: string;
-  enrolledDate?: string;
-  expectedGradDate?: string;
-  trainingType?: string;
-  scholarship?: string;
-  activities?: string;
-  awards?: string;
-  notes?: string;
-};
 
-const sampleStudent: Student = {
-  studentId: 'SV2020001',
-  fullName: 'Nguyễn Văn A',
-  dob: '15/08/2001',
-  gender: 'Nam',
-  idNumber: '012345678901',
-  ethnicity: 'Kinh',
-  religion: 'Không',
-  nationality: 'Việt Nam',
-  phone: '0123456789',
-  email: 'nguyenvana@example.com',
-  permanentAddress: 'Hà Nội, Ba Đình, Phúc Xá',
-  currentAddress: 'Hà Nội, Cầu Giấy, Nghĩa Tân',
-  major: 'Công nghệ thông tin',
-  className: 'D20_TH01',
-  cohort: '2020–2024',
-  faculty: 'Khoa CNTT',
-  status: 'Đang học',
-  gpa: '3.5/4.0',
-  credits: '120',
-  enrolledDate: '01/09/2020',
-  expectedGradDate: '30/06/2024',
-  trainingType: 'Chính quy',
-  scholarship: 'Không',
-  activities: 'Câu lạc bộ lập trình, Tình nguyện',
-  awards: 'Sinh viên tiên tiến 2022',
-  notes: '',
-};
 
 const maskId = (id = '') => {
   if (id.length <= 4) return id;
